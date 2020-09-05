@@ -30,7 +30,8 @@
         <h1 class="main__title">Войти на сайт</h1>
     </div>
     <div class="form-container">
-        <form class="form">
+        <form class="form" method="post">
+        {% csrf_token %}
             <div class="form__group">
                 <label for="id_username" class="form__label">Имя</label>
                 <div class="form__field-group">
@@ -49,7 +50,7 @@
             </div>
             <div class="form__footer">
                 <button class="button button_style_blue">Войти</button>
-                <a class="form__forgot-link">Забыли пароль?</a>
+                <a class="form__forgot-link" href="{% url 'password_reset' %}">Забыли пароль?</a>
             </div>
         </form>
     </div>

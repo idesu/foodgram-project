@@ -29,7 +29,8 @@
         <h1 class="main__title">Регистрация</h1>
     </div>
     <div class="form-container">
-        <form class="form" method="post" action="{% url 'signup' %}">
+        <form class="form" method="post">
+        {% csrf_token %}
             {% csrf_token %}
             <div class="form__group">
                 <label for="id_first_name" class="form__label">Имя</label>
