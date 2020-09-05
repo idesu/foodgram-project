@@ -1,10 +1,4 @@
 
-F
-www/pages/myFollow.css,f/4/f499379e75e45ffe45cf4931dadeef5ad96fe2d2
-D
-www/pages/single.css,0/d/0d899885db4c6265d44388539610e5d0f42b7661
-K
-www/js/components/Header.js,3/2/32fdb1578d5d2c6310a8aeab16662e11de036274
 D
 foodgram/__init__.py,8/6/86001dafa9826962d11b66ed734fa3b6c01945da
 @
