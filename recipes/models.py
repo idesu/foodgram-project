@@ -15,7 +15,7 @@ class Tag(models.Model):
 
 
 class Measurement(models.Model):
-    title = models.CharField('Название меры весов', max_length=30)
+    title = models.CharField('Название меры весов', max_length=30, unique=True)
 
     def __str__(self):
         return self.title
