@@ -6,7 +6,8 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Войти на сайт</title>
-    <link rel="stylesheet" href="./pages/form.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pages/form.css' %}">
 </head>
 <body class="body">
 <header class="header">
@@ -37,9 +38,16 @@
                 </div>
             </div>
             <div class="form__group">
-                <label for="id_password" class="form__label">Пароль</label>
+                <label for="id_password1" class="form__label">Пароль</label>
                 <div class="form__field-group">
-                    <input type="password" name="password" id="id_password" class="form__input">
+                    <input type="password" name="password" id="id_password1" class="form__input">
+                    <span class="form__error">Имя пользователя и пароль не совпадают. Введите правильные данные.</span>
+                </div>
+            </div>
+            <div class="form__group">
+                <label for="id_password2" class="form__label">Пароль</label>
+                <div class="form__field-group">
+                    <input type="password" name="password" id="id_password2" class="form__input">
                     <span class="form__error">Имя пользователя и пароль не совпадают. Введите правильные данные.</span>
                 </div>
             </div>

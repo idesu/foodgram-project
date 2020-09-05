@@ -53,7 +53,7 @@
     color: #333;
 }
 
-.login .form-row #id_username, .login .form-row #id_password {
+.login .form-row #id_username, .login .form-row #id_password1 #id_password2 {
     clear: both;
     padding: 8px;
     width: 100%;
