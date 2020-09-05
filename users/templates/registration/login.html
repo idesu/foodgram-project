@@ -19,7 +19,8 @@
             </ul>
             <ul class="nav__items list">
                 <li class="nav__item"><a href="#" class="nav__link link">Войти</a></li>
-                <li class="nav__item"><a href="#" class="button button_style_blue">Создать аккаунт</a></li>
+                <li class="nav__item"><a href="{% url 'signup' %}" class="button button_style_blue">Создать аккаунт</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -38,17 +39,12 @@
                 </div>
             </div>
             <div class="form__group">
-                <label for="id_password1" class="form__label">Пароль</label>
+                <label for="id_password" class="form__label">Пароль</label>
                 <div class="form__field-group">
-                    <input type="password" name="password" id="id_password1" class="form__input">
-                    <span class="form__error">Имя пользователя и пароль не совпадают. Введите правильные данные.</span>
-                </div>
-            </div>
-            <div class="form__group">
-                <label for="id_password2" class="form__label">Пароль</label>
-                <div class="form__field-group">
-                    <input type="password" name="password" id="id_password2" class="form__input">
-                    <span class="form__error">Имя пользователя и пароль не совпадают. Введите правильные данные.</span>
+                    <input type="password" name="password" id="id_password" class="form__input">
+                    {% if form.errors %}
+                        <span class="form__error">Имя пользователя и пароль не совпадают. Введите правильные данные.</span>
+                    {% endif %}
                 </div>
             </div>
             <div class="form__footer">
