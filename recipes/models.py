@@ -1,3 +1,82 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
-# Create your models here.
+from recipes.mixins import AutoDateMixin
+
+User = get_user_model()
+
+
+class Tag(models.Model):
+    title = models.CharField('Название', max_length=35)
+
+    def __str__(self):
+        return self.title
+
+
+class Ingredient(models.Model):
+    title = models.CharField('Название ингредиента', max_length=100)
+
+    def __str__(self):
+        return self.title
+
+
+class Measurement(models.Model):
+    title = models.CharField('Название меры весов', max_length=30)
+
+    def __str__(self):
+        return self.title
+
+
+class Recipe(AutoDateMixin, models.Model):
+    title = models.CharField('Название', max_length=200)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
+    image = models.ImageField('Изображение блюда', upload_to='recipes/')
+    description = models.TextField('Текст рецепта')
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        'Ингредиенты',
+        through='RecipeIngredients',
+        through_fields=('recipe', 'ingredient'),
+    )
+    tag = models.ManyToManyField(Tag, 'Тег')
+    cooking_time = models.IntegerField('Время приготовления')
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.title
+
+
+class RecipeIngredients(models.Model):
+    """Количество ингредиентов в рецепте."""
+
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name="recipeingredients")
+    measurement = models.ForeignKey(
+        Measurement,
+        on_delete=models.CASCADE,
+        related_name="recipeingredients",
+    )
+    amount = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.recipe.title} - {self.ingredient.title}'
+
+
+class Follow(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='follower')
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='following')
+
+    def __str__(self):
+        return f'{self.user} - {self.author}'
+
+
+class BookmarkRecipe(AutoDateMixin, models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='user')
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE, related_name='bookmarked')
+
+    def __str__(self):
+        return f'{self.user} - {self.recipe.title}'
