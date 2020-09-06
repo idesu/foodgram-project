@@ -42,18 +42,17 @@ class Recipe(AutoDateMixin, models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         'Ингредиенты',
-        through='RecipeIngredients',
+        through='RecipeIngredient',
         through_fields=('recipe', 'ingredient'),
     )
-    tag = models.ManyToManyField(Tag, 'Тег')
+    tags = models.ManyToManyField(Tag, 'Теги')
     cooking_time = models.IntegerField('Время приготовления')
-    slug = models.SlugField(unique=True)
 
     def __str__(self):
         return self.title
 
 
-class RecipeIngredients(models.Model):
+class RecipeIngredient(models.Model):
     """Количество ингредиентов в рецепте."""
 
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)

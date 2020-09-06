@@ -6,6 +6,5 @@ from .forms import CreationForm
 
 class SignUp(CreateView):
     form_class = CreationForm
-    # TODO: Вставить url страницы логина
-    success_url = reverse_lazy("admin:auth_user_changelist")
-    template_name = "reg.html"
+    success_url = reverse_lazy('login')
+    template_name = 'reg.html'
