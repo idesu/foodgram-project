@@ -10,7 +10,6 @@ from .forms import RecipeForm, RecipeIngredientForm
 from .models import Recipe, Ingredient, Tag
 
 
-@transaction.atomic
 def validate_ingredients_and_add_to_recipe(request, recipe_instance) -> None:
     """Вспомогательная функция для проверки и сохранения ингредиентов."""
 
@@ -34,28 +33,55 @@ def validate_ingredients_and_add_to_recipe(request, recipe_instance) -> None:
             raise ValidationError(f'ingredient {recipeingredient} is invalid')
 
 
+def update_tags(request, recipe):
+    recipe.tags.clear()
+    for tag in Tag.objects.all():
+        if request.POST.get(tag.title, None) == 'on':
+            recipe.tags.add(tag)
+
+
 @login_required
 def new_recipe(request):
     if request.method == 'POST':
         recipe_instance = Recipe(author=request.user)
-        form = RecipeForm(
-            request.POST, files=request.FILES or None, instance=recipe_instance)
+        form = RecipeForm(request.POST, files=request.FILES or None, instance=recipe_instance)
         if form.is_valid():
             with transaction.atomic():
                 try:
                     form.save()
                     validate_ingredients_and_add_to_recipe(request, recipe_instance)
-                    for tag in Tag.objects.all():
-                        if request.POST.get(tag.title, None) == 'on':
-                            recipe_instance.tags.add(tag)
+                    update_tags(request, recipe_instance)
                     #  TODO: Перенаправлять на index
                     return redirect('password_change')
                 except ValidationError as error:
                     form.add_error(field='ingredient', error=error)
         return render(request, 'formRecipe.html', {'form': form, })
-
     form = RecipeForm()
     return render(request, 'formRecipe.html', {'form': form, })
+
+
+@login_required
+def edit_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+
+    if request.user != recipe.author:
+        # TODO: Перенаправлять на index
+        return redirect('password_change')
+
+    form = RecipeForm(request.POST, files=request.FILES or None, instance=recipe)
+    if request.method == 'POST':
+        if form.is_valid():
+            with transaction.atomic():
+                try:
+                    form.save()
+                    validate_ingredients_and_add_to_recipe(request, recipe)
+                    update_tags(request, recipe)
+                    #  TODO: Перенаправлять на index
+                    return redirect('password_change')
+                except ValidationError as error:
+                    form.add_error(field='ingredient', error=error)
+        return render(request, 'formChangeRecipe.html', {'form': form, })
+    return render(request, 'formChangeRecipe.html', {'form': form, })
 
 
 def get_ingredients(request):
