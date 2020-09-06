@@ -1,4 +1,5 @@
 <!doctype html>
+{% load user_filters %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -36,9 +37,9 @@
         <form class="form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form__group">
-                <label for="id_name" class="form__label">Название рецепта</label>
+                <label for="{{ form.title.id_for_label }}" class="form__label">Название рецепта</label>
                 <div class="form__field-group">
-                    <input type="text" id="id_name" name="title" class="form__input">
+                    {{ form.title|addclass:"form__input" }}
                     {% for error in form.title.errors %}
                         <span class="form__error">{{ error }}</span>
                     {% endfor %}
@@ -74,6 +75,15 @@
                         <input type="number" id="cantidad" class="form__input" min="0">
                         <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
                     </div>
+
+{#                {% for ingredient in ingredients %}#}
+{#                    <div class="form__field-item-ingredient" id="ing3"><span> asddasdasd 12шт.</span> <span class="form__field-item-delete"></span>#}
+{#                        <input id="nameIngredient_3" name="nameIngredient_3" type="hidden" value="asddasdasd">#}
+{#                        <input id="valueIngredient_3" name="valueIngredient_3" type="hidden" value="12">#}
+{#                        <input id="unitsIngredient_3" name="unitsIngredient_3" type="hidden" value="шт.">#}
+{#                    </div>#}
+
+
                     <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
                     {% for error in form.ingredient.errors %}
                         <span class="form__error">{{ error }}</span>
@@ -81,19 +91,19 @@
                 </div>
             </div>
             <div class="form__group">
-                <label for="id_time" class="form__label">Время приготовления</label>
+                <label for="{{ form.cooking_time.id_for_label }}" class="form__label">Время приготовления</label>
                 <div class="form__field-group form__field-group_time">
-                    <input type="text" id="id_time" name="cooking_time" class="form__input">
-                    <label for="id_time" class="form__label">минут</label>
+                    {{ form.cooking_time|addclass:"form__input" }}
+                    <label for="{{ field.cooking_time.id_for_label }}" class="form__label">минут</label>
                     {% for error in form.cooking_time.errors %}
                         <span class="form__error">{{ error }}</span>
                     {% endfor %}
                 </div>
             </div>
             <div class="form__group">
-                <label for="id_description" class="form__label">Описание</label>
+                <label for="{{ form.description.id_for_label }}" class="form__label">Описание</label>
                 <div class="form__field-group">
-                    <textarea name="description" id="id_description" rows="8" class="form__textarea"></textarea>
+                    {{ form.description|addclass:"form__textarea" }}
                     {% for error in form.description.errors %}
                         <span class="form__error">{{ error }}</span>
                     {% endfor %}
@@ -102,7 +112,8 @@
             <div class="form__group">
                 <span class="form__label">Загрузить фото</span>
                 <div class="form__field-group">
-                    <input type="file" name="image" id="id_file">
+                    <label for="{{ form.image.id_for_label }}" class="form__file-button">Выбрать файл</label>
+                    {{ form.image|addclass:"form__file" }}
                     {% for error in form.image.errors %}
                         <span class="form__error">{{ error }}</span>
                     {% endfor %}

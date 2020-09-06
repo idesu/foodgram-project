@@ -44,6 +44,7 @@ class Recipe(AutoDateMixin, models.Model):
         'Ингредиенты',
         through='RecipeIngredient',
         through_fields=('recipe', 'ingredient'),
+        blank=True,
     )
     tags = models.ManyToManyField(Tag, 'Теги')
     cooking_time = models.IntegerField('Время приготовления')
