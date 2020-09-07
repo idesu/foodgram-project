@@ -3,7 +3,9 @@ from django.core.exceptions import ValidationError
 from recipes.models import Tag, RecipeIngredient, Ingredient
 
 
-def prepare_context_from_recipe_instance(recipe_instance, form):
+def prepare_context_from_recipe_instance(recipe_instance, form) -> dict:
+    """Собирает контекст для отрисовки формы рецепта на странице редактирования."""
+
     ingredients_list = []
     for idx, recipeingredient in enumerate(recipe_instance.recipeingredient_set.all()):
         ingredients_list.append(
@@ -14,15 +16,23 @@ def prepare_context_from_recipe_instance(recipe_instance, form):
                 'units': recipeingredient.ingredient.measurement.title,
             }
         )
-    tags = {
-        tag: 'on'
-        for tag in recipe_instance.tags.all().values_list('title', flat=True)
+    tags = {}
+    for tag in recipe_instance.tags.all().values_list('title', flat=True):
+        tags[tag] = 'on'
+
+    return {
+        'form': form,
+        'valid_ingredients': ingredients_list,
+        'tags': tags,
+        'ingredients_count': len(ingredients_list) + 1,
     }
 
-    return {'form': form, 'valid_ingredients': ingredients_list, 'tags': tags, 'ingredients_count': len(ingredients_list)+1}
 
+def prepare_context_from_post(
+    request, form, valid_ingredients, invalid_ingredients
+) -> dict:
+    """Собирает контекст для возврата формы рецепта с ошибками."""
 
-def prepare_context_from_post(request, form, valid_ingredients, invalid_ingredients) -> dict:
     valid = []
     for idx, ingredient in enumerate(valid_ingredients):
         valid.append(
@@ -34,21 +44,24 @@ def prepare_context_from_post(request, form, valid_ingredients, invalid_ingredie
             }
         )
 
-    tags = {
-        tag: request.POST[tag]
-        for tag in Tag.objects.all().values_list('title', flat=True)
-        if tag in request.POST
-    }
+    tags = {}
+    for tag in Tag.objects.all().values_list('title', flat=True):
+        if tag in request.POST:
+            tags[tag] = request.POST[tag]
 
     if invalid_ingredients:
         invalid_ingredients = ', '.join(invalid_ingredients)
         form.add_error(
             field='ingredients',
-            error=ValidationError(
-                f'Ингредиентов {invalid_ingredients} не существует.'
-            )
+            error=ValidationError(f'Ингредиентов {invalid_ingredients} не существует.'),
         )
-    return {'form': form, 'valid_ingredients': valid, 'tags': tags, 'ingredients_count': len(valid)+1}
+
+    return {
+        'form': form,
+        'valid_ingredients': valid,
+        'tags': tags,
+        'ingredients_count': len(valid) + 1,
+    }
 
 
 def validate_ingredients_list_from_post(request) -> tuple:
