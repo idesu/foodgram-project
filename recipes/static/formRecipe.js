@@ -12,7 +12,7 @@ const header = new Header(counterId);
 
 
 function Ingredients() {
-    let cur = 1;
+    let cur = JSON.parse(document.getElementById('cur').textContent);
     // клик по элементам с сервера
     const dropdown = (e) => {
         if (e.target.classList.contains('form__item-list')) {

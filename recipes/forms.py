@@ -9,5 +9,5 @@ class RecipeForm(forms.ModelForm):
         model = Recipe
         fields = ('title', 'description', 'image', 'cooking_time', 'ingredients')
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 4}),
+            'description': forms.Textarea(attrs={'rows': 8}),
         }
