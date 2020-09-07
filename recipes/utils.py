@@ -17,7 +17,7 @@ def prepare_context_from_recipe_instance(recipe_instance, form) -> dict:
             }
         )
     tags = {}
-    for tag in recipe_instance.tags.all().values_list('title', flat=True):
+    for tag in recipe_instance.tags.values_list('title', flat=True):
         tags[tag] = 'on'
 
     return {
@@ -45,7 +45,7 @@ def prepare_context_from_post(
         )
 
     tags = {}
-    for tag in Tag.objects.all().values_list('title', flat=True):
+    for tag in Tag.objects.values_list('title', flat=True):
         if tag in request.POST:
             tags[tag] = request.POST[tag]
 

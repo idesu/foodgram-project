@@ -16,6 +16,19 @@ from .utils import (
 )
 
 
+def recipe(request, recipe_id):
+    recipe_instance = get_object_or_404(Recipe, id=recipe_id)
+    ingredients = recipe_instance.recipeingredient_set.all().select_related(
+        'ingredient'
+    )
+    tags = recipe_instance.tags.values_list('title', flat=True)
+    return render(
+        request,
+        'singlePageNotAuth.html',
+        {'recipe': recipe_instance, 'ingredients': ingredients, 'tags': tags}
+    )
+
+
 @login_required
 def new_recipe(request):
     if request.method == 'POST':
