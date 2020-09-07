@@ -21,7 +21,7 @@ def recipe(request, recipe_id):
     ingredients = recipe_instance.recipeingredient_set.all().select_related(
         'ingredient'
     )
-    tags = recipe_instance.tags.values_list('title', flat=True)
+    tags = recipe_instance.tags.values_list('slug', flat=True)
     return render(
         request,
         'singlePageNotAuth.html',

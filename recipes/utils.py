@@ -17,7 +17,7 @@ def prepare_context_from_recipe_instance(recipe_instance, form) -> dict:
             }
         )
     tags = {}
-    for tag in recipe_instance.tags.values_list('title', flat=True):
+    for tag in recipe_instance.tags.values_list('slug', flat=True):
         tags[tag] = 'on'
 
     return {
@@ -45,7 +45,7 @@ def prepare_context_from_post(
         )
 
     tags = {}
-    for tag in Tag.objects.values_list('title', flat=True):
+    for tag in Tag.objects.values_list('slug', flat=True):
         if tag in request.POST:
             tags[tag] = request.POST[tag]
 
@@ -102,5 +102,5 @@ def create_recipeingredients(recipe_instance, valid_ingredients) -> None:
 def update_tags(request, recipe) -> None:
     recipe.tags.clear()
     for tag in Tag.objects.all():
-        if request.POST.get(tag.title, None) == 'on':
+        if request.POST.get(tag.slug, None) == 'on':
             recipe.tags.add(tag)

@@ -8,10 +8,10 @@ GRAM_ID = 1
 
 
 class Tag(models.Model):
-    title = models.CharField('Название', max_length=35)
+    slug = models.SlugField('Название', max_length=35, unique=True)
 
     def __str__(self):
-        return self.title
+        return self.slug
 
 
 class Measurement(models.Model):
@@ -41,12 +41,12 @@ class Recipe(AutoDateMixin, models.Model):
     description = models.TextField('Текст рецепта')
     ingredients = models.ManyToManyField(
         Ingredient,
-        'Ингредиенты',
+        related_name='recipes',
         through='RecipeIngredient',
         through_fields=('recipe', 'ingredient'),
         blank=True,
     )
-    tags = models.ManyToManyField(Tag, 'Теги')
+    tags = models.ManyToManyField(Tag, related_name='recipes')
     cooking_time = models.IntegerField('Время приготовления')
 
     def __str__(self):
