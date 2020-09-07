@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 
 from .forms import RecipeForm
-from .models import Recipe, Ingredient, Follow, User
+from .models import Recipe, Ingredient, Follow, User, BookmarkRecipe
 from .utils import (
     validate_ingredients_list_from_post,
     create_recipeingredients,
@@ -23,10 +23,18 @@ def recipe(request, recipe_id):
         'ingredient'
     )
     tags = recipe_instance.tags.values_list('slug', flat=True)
+    recipe_in_favorites = BookmarkRecipe.objects.filter(
+        user=request.user, recipe=recipe_instance
+    ).exists()
     return render(
         request,
         'singlePage.html',
-        {'recipe': recipe_instance, 'ingredients': ingredients, 'tags': tags}
+        {
+            'recipe': recipe_instance,
+            'ingredients': ingredients,
+            'tags': tags,
+            'recipe_in_favorites': recipe_in_favorites,
+        }
     )
 
 
@@ -99,24 +107,51 @@ def get_ingredients(request):
 
 @login_required
 @require_http_methods(['POST', 'DELETE'])
-def subscriptions(request, subscription_id=None):
-    print('start')
+def subscriptions(request, author_id=None):
     if request.method == 'POST':
         body = json.loads(request.body)
-        subscription_id = body['id']
-        subscription_to = get_object_or_404(User, id=subscription_id)
+        author_id = body['id']
+        author = get_object_or_404(User, id=author_id)
 
         subscribe, created = Follow.objects.get_or_create(
-            user=request.user, author=subscription_to)
+            user=request.user, author=author
+        )
 
         result = {'success': True} if created else {'success': False}
         result_json = json.dumps(result)
         return HttpResponse(result_json, content_type='application/json')
 
     if request.method == 'DELETE':
-        subscription_to = get_object_or_404(User, id=subscription_id)
-        subscription = Follow.objects.get(user=request.user, author=subscription_to).delete()
+        author = get_object_or_404(User, id=author_id)
+        subscription = Follow.objects.get(user=request.user, author=author).delete()
 
         result = {'success': True} if subscription else {'success': False}
+        result_json = json.dumps(result)
+        return HttpResponse(result_json, content_type='application/json')
+
+
+@login_required
+@require_http_methods(['POST', 'DELETE'])
+def favorites(request, recipe_id=None):
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        recipe_id = body['id']
+        bookmark_recipe = get_object_or_404(Recipe, id=recipe_id)
+
+        bookmark, created = BookmarkRecipe.objects.get_or_create(
+            user=request.user, recipe=bookmark_recipe
+        )
+
+        result = {'success': True} if created else {'success': False}
+        result_json = json.dumps(result)
+        return HttpResponse(result_json, content_type='application/json')
+
+    if request.method == 'DELETE':
+        bookmark_recipe = get_object_or_404(Recipe, id=recipe_id)
+        bookmark = BookmarkRecipe.objects.get(
+            user=request.user, recipe=bookmark_recipe
+        ).delete()
+
+        result = {'success': True} if bookmark else {'success': False}
         result_json = json.dumps(result)
         return HttpResponse(result_json, content_type='application/json')
