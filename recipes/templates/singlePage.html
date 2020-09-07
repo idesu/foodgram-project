@@ -47,7 +47,7 @@
     {% endif %}
 </header>
     <main class="main container">
-        <div class="single-card" data-id="371">
+        <div class="single-card" data-id="{{ recipe.id }}" author-id="{{ recipe.author_id }}">
             {% load thumbnail %}
             {% thumbnail recipe.image "480x480" crop="center" upscale=True as im %}
                 <img class="single-card__image" src="{{ im.url }}" alt="какой-то текст"/>

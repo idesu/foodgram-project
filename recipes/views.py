@@ -4,9 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_http_methods
 
 from .forms import RecipeForm
-from .models import Recipe, Ingredient
+from .models import Recipe, Ingredient, Follow, User
 from .utils import (
     validate_ingredients_list_from_post,
     create_recipeingredients,
@@ -94,3 +95,28 @@ def get_ingredients(request):
     result_json = json.dumps(results)
     print(result_json)
     return HttpResponse(result_json, content_type='application/json')
+
+
+@login_required
+@require_http_methods(['POST', 'DELETE'])
+def subscriptions(request, subscription_id=None):
+    print('start')
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        subscription_id = body['id']
+        subscription_to = get_object_or_404(User, id=subscription_id)
+
+        subscribe, created = Follow.objects.get_or_create(
+            user=request.user, author=subscription_to)
+
+        result = {'success': True} if created else {'success': False}
+        result_json = json.dumps(result)
+        return HttpResponse(result_json, content_type='application/json')
+
+    if request.method == 'DELETE':
+        subscription_to = get_object_or_404(User, id=subscription_id)
+        subscription = Follow.objects.get(user=request.user, author=subscription_to).delete()
+
+        result = {'success': True} if subscription else {'success': False}
+        result_json = json.dumps(result)
+        return HttpResponse(result_json, content_type='application/json')
