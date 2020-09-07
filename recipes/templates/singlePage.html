@@ -1,0 +1,126 @@
+{% load user_filters %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Французские тосты</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pages/single.css' %}">
+</head>
+<body class="body">
+<header class="header">
+    {% if user.is_authenticated %}
+        <nav class="nav" aria-label="header_auth">
+            <div class="nav__container container">
+                <ul class="nav__items list">
+                    <li class="nav__item nav__item_active"><a href="#" class="nav__link link">Рецепты</a></li>
+                    <li class="nav__item"><a href="#" class="nav__link link">Мои подписки</a></li>
+                    <li class="nav__item"><a href="#" class="nav__link link">Создать рецепт</a></li>
+                    <li class="nav__item"><a href="#" class="nav__link link">Избранное</a></li>
+                    <li class="nav__item"><a href="#" class="nav__link link">Список покупок</a><span class="badge badge_style_blue nav__badge" id="counter">4</span></li>
+
+                </ul>
+                <ul class="nav__items list">
+                    <li class="nav__item"><a href="#" class="nav__link link">Изменить пароль</a></li>
+                    <li class="nav__item"><a href="#" class="nav__link link">Выход</a></li>
+                </ul>
+            </div>
+        </nav>
+    {% else %}
+        <nav class="nav" aria-label="head_not_auth">
+            <div class="nav__container container">
+                <ul class="nav__items list">
+                    <li class="nav__item nav__item_active"><a href="#" class="nav__link link">Рецепты</a></li>
+                    <li class="nav__item"><a href="#" class="nav__link link">Список покупок</a><span class="badge badge_style_blue nav__badge" id="counter">4</span></li>
+                </ul>
+                <ul class="nav__items list">
+                    <li class="nav__item"><a href="{% url 'login'%}" class="nav__link link">Войти</a></li>
+                    <li class="nav__item"><a href="{% url 'signup'%}" class="button button_style_blue">Создать аккаунт</a></li>
+                </ul>
+            </div>
+        </nav>
+    {% endif %}
+</header>
+    <main class="main container">
+        <div class="single-card" data-id="371">
+            {% load thumbnail %}
+            {% thumbnail recipe.image "480x480" crop="center" upscale=True as im %}
+                <img class="single-card__image" src="{{ im.url }}" alt="какой-то текст"/>
+            {% endthumbnail %}
+            <div class="single-card__info">
+                <div class="single-card__header-info">
+                    <h1 class="single-card__title">{{ recipe.title }}</h1>
+                    {% if user.is_authenticated and user != recipe.author %}
+                        <div class="single-card__favorite">
+                            <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
+                            <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
+                        </div>
+                    {% endif %}
+                </div>
+                <ul class="single-card__items">
+                    {% if 'lunch' in tags %}<li class="single-card__item"><span class="badge badge_style_green">Обед</span></li>{% endif %}
+                    {% if 'breakfast' in tags %}<li class="single-card__item"><span class="badge badge_style_orange">Завтрак</span></li>{% endif %}
+                    {% if 'dinner' in tags %}<li class="single-card__item"><span class="badge badge_style_purple">Ужин</span></li>{% endif %}
+                </ul>
+                <div class="single-card__items single-card__items_column">
+                    <p class="single-card__text"><span class="icon-time"></span> {{ recipe.cooking_time }} мин.</p>
+                    {% if user == recipe.author %}
+                        <ul class="single-card__items">
+                            <li class="single-card__item"><p class="single-card__text"><span class="icon-user"></span> {{ recipe.author.username }}</p></li>
+                            <li class="single-card__item">  <a style="margin-left: 2.5em" href="{% url 'edit_recipe' recipe.id %}" class="single-card__text">Редактировать рецепт</a></li>
+                        </ul>
+                    {% else %}
+                        <p class="single-card__text"><span class="icon-user"></span> {{ recipe.author.username }}</p>
+                    {% endif %}
+                </div>
+                <ul class="single-card__items">
+                    <li class="single-card__item"><button class="button button_style_blue" name="purchpurchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
+                    {% if user.is_authenticated and user != recipe.author %}
+                        <li class="single-card__item"><button class="button button_style_light-blue button_size_auto" name="subscribe" data-out>Подписаться на автора</button></li>
+                    {% endif %}
+                </ul>
+                <div class="single-card__section">
+                    <h3 class="single-card__section-title">Ингридиенты:</h3>
+                    <div class="single-card__items single-card__items_column">
+                        {% for ingredient in ingredients %}
+                            <p class=" single-card__section-item">{{ ingredient.ingredient.title }} - {{ ingredient.amount }}
+                                {{ ingredient.ingredient.measurement.title }}.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="single-card__section">
+                    <h3 class="single-card__section-title">Описание:</h3>
+                    <p class=" single-card__section-text">{{ recipe.description }}</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="footer__container container">
+            <a href="#" class="footer__brand link">Продуктовый помощник</a>
+            <ul class="footer__items">
+                <li class="footer__item"><a href="#" class="footer__link link">Об авторе </a></li>
+                <li class="footer__item"><a href="#" class="footer__link link">Технологии</a></li>
+            </ul>
+        </div>
+    </footer>
+<script src="{% static 'js/config/config.js' %}"></script>
+<script src="{% static 'js/components/Purchpurachases.js' %}"></script>
+
+{% if user.is_authenticated %}
+<script src="{% static 'js/components/Favorites.js' %}"></script>
+<script src="{% static 'js/components/Subscribe.js' %}"></script>
+{% endif %}
+
+<script src="{% static 'js/components/MainCards.js' %}"></script>
+<script src="{% static 'js/components/SingleCard.js' %}"></script>
+<script src="{% static 'js/components/Header.js' %}"></script>
+
+<script src="{% static 'js/api/Api.js' %}"></script>
+<script src="{% static 'singlePage.js' %}"></script>
+</body>
+</html>

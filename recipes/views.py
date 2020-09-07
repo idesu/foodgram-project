@@ -24,7 +24,7 @@ def recipe(request, recipe_id):
     tags = recipe_instance.tags.values_list('slug', flat=True)
     return render(
         request,
-        'singlePageNotAuth.html',
+        'singlePage.html',
         {'recipe': recipe_instance, 'ingredients': ingredients, 'tags': tags}
     )
 
