@@ -65,7 +65,7 @@ def prepare_context_from_post(
 
 
 def validate_ingredients_list_from_post(request) -> tuple:
-    """функция обрабатывает список ингредиентов с фронтенда и валидирует их наличие в базе."""
+    """Обрабатывает список ингредиентов с фронтенда и валидирует их наличие в базе."""
 
     invalid_ingredients = []
     valid_ingredients_data = []
@@ -88,7 +88,8 @@ def validate_ingredients_list_from_post(request) -> tuple:
 
 
 def create_recipeingredients(recipe_instance, valid_ingredients) -> None:
-    """Функция сохранения провалидированных ингредиентов для рецента."""
+    """Сохраняет провалидированные ингредиенты для рецента."""
+
     for recipeingredient in valid_ingredients:
         recipeingredient['recipe'] = recipe_instance
         RecipeIngredient.objects.create(
