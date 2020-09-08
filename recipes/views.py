@@ -3,6 +3,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
@@ -24,6 +25,18 @@ def index(request):
         .order_by('-created_at')
     )
     paginator = Paginator(recipes, 9)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    return render(request, "index.html", {'page': page, 'paginator': paginator})
+
+
+def my_subscriptions(request):
+    authors = (
+        User.objects.filter(following__user=request.user)
+            .prefetch_related('recipes')
+            .annotate(recipes_count=Count('recipes')-3)
+    )
+    paginator = Paginator(authors, 9)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, "index.html", {'page': page, 'paginator': paginator})
