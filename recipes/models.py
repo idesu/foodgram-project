@@ -9,6 +9,8 @@ GRAM_ID = 1
 
 class Tag(models.Model):
     slug = models.SlugField('Название', max_length=35, unique=True)
+    text = models.CharField('Отображаемое название', max_length=35, blank=True, null=True)
+    color = models.CharField('Цвет', max_length=35, blank=True, null=True)
 
     def __str__(self):
         return self.slug

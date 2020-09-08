@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,6 +16,17 @@ from .utils import (
     prepare_context_from_post,
     prepare_context_from_recipe_instance,
 )
+
+
+def index(request):
+    recipes = (
+        Recipe.objects.select_related('author')
+        .order_by('-created_at')
+    )
+    paginator = Paginator(recipes, 9)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    return render(request, "index.html", {'page': page, 'paginator': paginator})
 
 
 def recipe(request, recipe_id):
@@ -54,8 +66,7 @@ def new_recipe(request):
                 form.save()
                 create_recipeingredients(recipe_instance, valid_ingredients)
                 update_tags(request, recipe_instance)
-                #  TODO: Перенаправлять на index
-            return redirect('password_change')
+            return redirect('index')
         context = prepare_context_from_post(
             request, form, valid_ingredients, invalid_ingredients
         )
@@ -68,8 +79,7 @@ def new_recipe(request):
 def edit_recipe(request, recipe_id):
     recipe_instance = get_object_or_404(Recipe, id=recipe_id)
     if request.user != recipe_instance.author:
-        # TODO: Перенаправлять на index
-        return redirect('password_change')
+        return redirect('index')
 
     form = RecipeForm(
         request.POST or None, files=request.FILES or None, instance=recipe_instance
@@ -83,14 +93,13 @@ def edit_recipe(request, recipe_id):
                 form.save()
                 create_recipeingredients(recipe_instance, valid_ingredients)
                 update_tags(request, recipe_instance)
-                #  TODO: Перенаправлять на index
-                return redirect('password_change')
+                return redirect('index')
         context = prepare_context_from_post(
             request, form, valid_ingredients, invalid_ingredients
         )
-        return render(request, 'formChangeRecipe.html', context)
+        return render(request, 'formRecipe.html', context)
     context = prepare_context_from_recipe_instance(recipe_instance, form)
-    return render(request, 'formChangeRecipe.html', context)
+    return render(request, 'formRecipe.html', context)
 
 
 def get_ingredients(request):
