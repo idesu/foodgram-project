@@ -24,17 +24,28 @@ def index(request):
         Recipe.objects.select_related('author')
         .order_by('-created_at')
     )
+    tags = request.GET.get('tag', None)
+    if tags:
+        recipes = recipes.filter(tags__slug__in=tags.split('_'))
     paginator = Paginator(recipes, 9)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, "index.html", {'page': page, 'paginator': paginator})
+    return render(
+        request,
+        "index.html",
+        {
+            'page': page,
+            'paginator': paginator,
+            'tags': tags
+        }
+    )
 
 
 def my_subscriptions(request):
     authors = (
         User.objects.filter(following__user=request.user)
-            .prefetch_related('recipes')
-            .annotate(recipes_count=Count('recipes')-3)
+        .prefetch_related('recipes')
+        .annotate(recipes_count=Count('recipes')-3)
     )
     paginator = Paginator(authors, 9)
     page_number = request.GET.get('page')
