@@ -1,6 +1,6 @@
 from django import template
 
-from recipes.models import BookmarkRecipe
+from recipes.models import BookmarkRecipe, Follow, Recipe
 
 register = template.Library()
 
@@ -13,6 +13,16 @@ def addclass(field, css):
 @register.filter
 def does_recipe_in_bookmarks(recipe, user):
     return BookmarkRecipe.objects.filter(user=user, recipe=recipe).exists()
+
+
+@register.filter
+def does_author_in_subscriptions(recipe, user):
+    return Follow.objects.filter(user=user, author=recipe.author).exists()
+
+
+@register.filter
+def author_top_recipes(author):
+    return author.recipes.all().order_by('-created_at')[:3]
 
 
 @register.filter
@@ -33,3 +43,6 @@ def query_transform(context, **kwargs):
     for k, v in kwargs.items():
         query[k] = v
     return query.urlencode()
+
+
+

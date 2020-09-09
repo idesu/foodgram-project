@@ -22,6 +22,8 @@ from .utils import (
 def index(request):
     recipes = (
         Recipe.objects.select_related('author')
+        .prefetch_related('author__following')
+        .prefetch_related('bookmarked')
         .order_by('-created_at')
     )
     tags = request.GET.get('tag', None)
@@ -40,17 +42,17 @@ def index(request):
         }
     )
 
-
+@login_required()
 def my_subscriptions(request):
     authors = (
         User.objects.filter(following__user=request.user)
         .prefetch_related('recipes')
         .annotate(recipes_count=Count('recipes')-3)
     )
-    paginator = Paginator(authors, 9)
+    paginator = Paginator(authors, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, "index.html", {'page': page, 'paginator': paginator})
+    return render(request, "myFollow.html", {'page': page, 'paginator': paginator})
 
 
 def recipe(request, recipe_id):
@@ -59,9 +61,6 @@ def recipe(request, recipe_id):
         'ingredient'
     )
     tags = recipe_instance.tags.values_list('slug', flat=True)
-    recipe_in_favorites = BookmarkRecipe.objects.filter(
-        user=request.user, recipe=recipe_instance
-    ).exists()
     return render(
         request,
         'singlePage.html',
@@ -69,7 +68,6 @@ def recipe(request, recipe_id):
             'recipe': recipe_instance,
             'ingredients': ingredients,
             'tags': tags,
-            'recipe_in_favorites': recipe_in_favorites,
         }
     )
 

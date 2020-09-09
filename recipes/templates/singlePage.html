@@ -26,8 +26,8 @@
 
                 </ul>
                 <ul class="nav__items list">
-                    <li class="nav__item"><a href="#" class="nav__link link">Изменить пароль</a></li>
-                    <li class="nav__item"><a href="#" class="nav__link link">Выход</a></li>
+                    <li class="nav__item"><a href="{% url 'login'%}" class="nav__link link">Изменить пароль</a></li>
+                    <li class="nav__item"><a href="{% url 'signup'%}" class="nav__link link">Выход</a></li>
                 </ul>
             </div>
         </nav>
@@ -35,7 +35,7 @@
         <nav class="nav" aria-label="head_not_auth">
             <div class="nav__container container">
                 <ul class="nav__items list">
-                    <li class="nav__item nav__item_active"><a href="#" class="nav__link link">Рецепты</a></li>
+                    <li class="nav__item nav__item_active"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
                     <li class="nav__item"><a href="#" class="nav__link link">Список покупок</a><span class="badge badge_style_blue nav__badge" id="counter">4</span></li>
                 </ul>
                 <ul class="nav__items list">
@@ -54,7 +54,7 @@
                     <h1 class="single-card__title">{{ recipe.title }}</h1>
                     {% if user.is_authenticated and user != recipe.author %}
                         <div class="single-card__favorite">
-                        {% if recipe_in_favorites %}
+                        {% if recipe|does_recipe_in_bookmarks:user %}
                             <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_big icon-favorite_active"></span></button>
                         {% else %}
                             <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
@@ -83,9 +83,13 @@
                     <li class="single-card__item"><button class="button button_style_blue" name="purchpurchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
                     {% if user.is_authenticated and user != recipe.author %}
                         <li class="single-card__item">
-                            <button class="button button_style_light-blue button_size_auto" name="subscribe" data-out>Подписаться на автора</button></li>
-                    {% endif %}
+                        {% if not recipe|does_author_in_subscriptions:user %}
+                            <button class="button button_style_light-blue button_size_auto" name="subscribe" data-out="true">Подписаться на автора</button></li>
+                        {% else %}
+                            <button class="button button_style_light-blue button_size_auto button_style_light-blue-outline" name="subscribe"><span class="icon-check button__icon"></span> Отписаться от автора</button>
+                        {% endif %}
                 </ul>
+                    {% endif %}
                 <div class="single-card__section">
                     <h3 class="single-card__section-title">Ингридиенты:</h3>
                     <div class="single-card__items single-card__items_column">

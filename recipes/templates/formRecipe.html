@@ -119,8 +119,12 @@
                 </div>
             </div>
             <div class="form__footer">
-                <button class="button button_style_blue">{% if request.resolver_match.url_name == 'new_recipe' %}Создать рецепт{% else %}Сохранить{% endif %}</button>
-                <a style="margin-left: 2.5em" href="#" class="form__ingredient-link">Удалить</a>
+                {% if request.resolver_match.url_name == 'new_recipe' %}
+                    <button class="button button_style_blue">Создать рецепт</button>
+                {% else %}
+                    <button class="button button_style_blue">Сохранить</button>
+                    <a style="margin-left: 2.5em" href="#" class="form__ingredient-link">Удалить</a>
+                {% endif %}
             </div>
         </form>
     </div>
