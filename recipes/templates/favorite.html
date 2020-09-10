@@ -2,6 +2,7 @@
 {% load static %}
 {% csrf_token %}
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,41 +10,41 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Рецепты</title>
+    <title>Избранное</title>
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
 </head>
 <body class="body">
-  <header class="header">
-      <nav class="nav" aria-label="vgj">
-          <div class="nav__container container">
-              {% if user.is_authenticated %}
-                  <ul class="nav__items list">
-                      <li class="nav__item nav__item_active"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
-                      <li class="nav__item"><a href="{% url 'my_subscriptions' %}" class="nav__link link">Мои подписки</a></li>
-                      <li class="nav__item"><a href="{% url 'new_recipe' %}" class="nav__link link">Создать рецепт</a></li>
-                      <li class="nav__item"><a href="{% url 'my_bookmarks' %}" class="nav__link link">Избранное</a></li>
-                      <li class="nav__item"><a href="#" class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge" id="counter">4</span></li>
-                  </ul>
-                  <ul class="nav__items list">
-                      <li class="nav__item"><a href="{% url 'password_change' %}" class="nav__link link">Изменить пароль</a></li>
-                      <li class="nav__item"><a href="{% url 'logout' %}" class="nav__link link">Выход</a></li>
-                  </ul>
-              {% else %}
-                  <ul class="nav__items list">
+<header class="header">
+    <nav class="nav">
+        <div class="nav__container container">
+            {% if user.is_authenticated %}
+                <ul class="nav__items list">
+                    <li class="nav__item"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
+                    <li class="nav__item"><a href="{% url 'my_subscriptions' %}" class="nav__link link">Мои подписки</a></li>
+                    <li class="nav__item"><a href="{% url 'new_recipe' %}" class="nav__link link">Создать рецепт</a></li>
+                    <li class="nav__item nav__item_active"><a href="{% url 'my_bookmarks' %}" class="nav__link link">Избранное</a></li>
+                    <li class="nav__item"><a href="#" class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge" id="counter">4</span></li>
+                </ul>
+                    <ul class="nav__items list">
+                    <li class="nav__item"><a href="{% url 'password_change' %}" class="nav__link link">Изменить пароль</a></li>
+                    <li class="nav__item"><a href="{% url 'logout' %}" class="nav__link link">Выход</a></li>
+                </ul>
+            {% else %}
+                    <ul class="nav__items list">
                     <li class="nav__item nav__item_active"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
                     <li class="nav__item nav__item_disabled"><a href="#" class="nav__link link">Список покупок <span class="badge badge_style_blue nav__badge" id="counter">4</span></a></li>
-                  </ul>
-                  <ul class="nav__items list">
-                      <li class="nav__item"><a href="{% url 'login' %}" class="nav__link link">Войти</a></li>
-                      <li class="nav__item"><a href="{% url 'signup' %}" class="button button_style_blue">Создать аккаунт</a></li>
-                  </ul>
+                </ul>
+                    <ul class="nav__items list">
+                    <li class="nav__item"><a href="{% url 'login' %}" class="nav__link link">Войти</a></li>
+                    <li class="nav__item"><a href="{% url 'signup' %}" class="button button_style_blue">Создать аккаунт</a></li>
+                </ul>
               {% endif %}
-          </div>
-      </nav>
-  </header>
+        </div>
+    </nav>
+</header>
     <main class="main container">
         <div class="main__header">
-            <h1 class="main__title">{{ author.username}}</h1>
+            <h1 class="main__title">Избранное</h1>
             <ul class="tags">
                 <li class="tags__item">
                     <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange {% if 'breakfast' in tags %}tags__checkbox_active{% endif %}" href="{{ request.path }}?{% query_transform tag=request|get_tags:"breakfast" %}"></a>
@@ -58,18 +59,8 @@
                     <label for="dinner" class="tags__label">Ужин</label>
                 </li>
             </ul>
-
         </div>
-        {% if user.is_authenticated and user != author %}
-        <div class="author-subscribe" data-author="{{ author.id }}">
-            {% if not author|does_author_in_subscriptions:user %}
-                <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto" name="subscribe">Подписаться на автора</button></p>
-            {% else %}
-                <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto button_style_light-blue-outline" name="subscribe" data-out="true"><span class="icon-check button__icon"></span>Отписаться от автора</button></p>
-            {% endif %}
-        </div>
-        {% endif %}
-        <div class="card-list" >
+        <div class="card-list">
         {% for recipe in page %}
             <div class="card" data-id="{{ recipe.id }}">
                 <a href="{% url 'recipe' recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="card__image"></a>
@@ -98,9 +89,9 @@
             </div>
         {% endfor %}
         </div>
-    {% if page.has_other_pages %}
-        {% include "paginator.html" with items=page paginator=paginator%}
-    {% endif %}
+        {% if page.has_other_pages %}
+            {% include "paginator.html" with items=page paginator=paginator%}
+        {% endif %}
     </main>
     <footer class="footer">
         <div class="footer__container container">
@@ -111,18 +102,16 @@
             </ul>
         </div>
     </footer>
-  <script src="{% static 'js/config/config.js' %}"></script>
-  <script src="{% static 'js/components/MainCards.js' %}"></script>
+<script src="{% static 'js/config/config.js' %}"></script>
+<script src="{% static 'js/components/MainCards.js' %}"></script>
 
-  <script src="{% static 'js/components/Purchpurachases.js' %}"></script>
-  <script src="{% static 'js/components/Favorites.js' %}"></script>
-  <script src="{% static 'js/components/Subscribe.js' %}"></script>
+<script src="{% static 'js/components/Purchpurachases.js' %}"></script>
+<script src="{% static 'js/components/Favorites.js' %}"></script>
 
-  <script src="{% static 'js/components/CardList.js' %}"></script>
-  <script src="{% static 'js/components/AuthorRecipe.js' %}"></script>
-  <script src="{% static 'js/components/Header.js' %}"></script>
+<script src="{% static 'js/components/CardList.js' %}"></script>
+<script src="{% static 'js/components/Header.js' %}"></script>
 
-  <script src="{% static 'js/api/Api.js' %}"></script>
-  <script src="{% static 'authorRecipe.js' %}"></script>
+<script src="{% static 'js/api/Api.js' %}"></script>
+<script src="{% static 'favorite.js' %}"></script>
 </body>
 </html>

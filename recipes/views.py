@@ -69,6 +69,31 @@ def author(request, author_id):
         }
     )
 
+@login_required
+def my_bookmarks(request):
+    recipes = (
+        Recipe.objects.select_related('author')
+        .filter(bookmarked__user=request.user)
+        .prefetch_related('author__following')
+        .prefetch_related('bookmarked')
+        .order_by('-created_at')
+    )
+    tags = request.GET.get('tag', None)
+    if tags:
+        recipes = recipes.filter(tags__slug__in=tags.split('_'))
+    paginator = Paginator(recipes, 6)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    return render(
+        request,
+        "favorite.html",
+        {
+            'page': page,
+            'paginator': paginator,
+            'tags': tags,
+        }
+    )
+
 
 @login_required()
 def my_subscriptions(request):

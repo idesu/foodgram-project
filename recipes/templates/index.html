@@ -1,5 +1,5 @@
 {% load user_filters %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +20,7 @@
                       <li class="nav__item nav__item_active"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
                       <li class="nav__item"><a href="{% url 'my_subscriptions' %}" class="nav__link link">Мои подписки</a></li>
                       <li class="nav__item"><a href="{% url 'new_recipe' %}" class="nav__link link">Создать рецепт</a></li>
-                      <li class="nav__item"><a href="#" class="nav__link link">Избранное</a></li>
+                      <li class="nav__item"><a href="{% url 'my_bookmarks' %}" class="nav__link link">Избранное</a></li>
                       <li class="nav__item"><a href="#" class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge" id="counter">4</span></li>
                   </ul>
                   <ul class="nav__items list">
@@ -78,7 +78,7 @@
                     {% if user.is_authenticated %}
                         <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
                         {% if recipe|does_recipe_in_bookmarks:user %}
-                            <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_active"></span></button>
+                            <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
                         {% else %}
                             <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
                         {% endif %}
