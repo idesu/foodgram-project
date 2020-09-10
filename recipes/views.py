@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 
 from .forms import RecipeForm
-from .models import Recipe, Ingredient, Follow, User, BookmarkRecipe
+from .models import Recipe, Ingredient, Follow, User, BookmarkRecipe, ShoppingList
 from .utils import (
     validate_ingredients_list_from_post,
     create_recipeingredients,
@@ -69,6 +69,7 @@ def author(request, author_id):
         }
     )
 
+
 @login_required
 def my_bookmarks(request):
     recipes = (
@@ -95,7 +96,7 @@ def my_bookmarks(request):
     )
 
 
-@login_required()
+@login_required
 def my_subscriptions(request):
     authors = (
         User.objects.filter(following__user=request.user)
@@ -177,6 +178,7 @@ def edit_recipe(request, recipe_id):
     return render(request, 'formRecipe.html', context)
 
 
+@login_required
 def get_ingredients(request):
     query_text = request.GET.get('query', None)
     search_query = Ingredient.objects.filter(title__istartswith=query_text)[:8]
@@ -239,3 +241,39 @@ def favorites(request, recipe_id=None):
         result = {'success': True} if bookmark else {'success': False}
         result_json = json.dumps(result)
         return HttpResponse(result_json, content_type='application/json')
+
+
+@login_required
+@require_http_methods(['GET', 'POST', 'DELETE'])
+def oh_my_purchpurchases(request, recipe_id=None):
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        recipe_id = body['id']
+        shopping_list, _ = ShoppingList.objects.get_or_create(
+            user=request.user
+        )
+        try:
+            recipe_to_buy = get_object_or_404(Recipe, id=recipe_id)
+            shopping_list.recipes.add(recipe_to_buy)
+            result = {'success': True}
+        except Exception:
+            result = {'success': False}
+
+        result_json = json.dumps(result)
+        return HttpResponse(result_json, content_type='application/json')
+    elif request.method == 'DELETE':
+        shopping_list, _ = ShoppingList.objects.get_or_create(
+            user=request.user
+        )
+        try:
+            recipe_to_remove = get_object_or_404(Recipe, id=recipe_id)
+            shopping_list.recipes.remove(recipe_to_remove)
+            result = {'success': True}
+        except Exception:
+            result = {'success': False}
+
+        result_json = json.dumps(result)
+        return HttpResponse(result_json, content_type='application/json')
+
+    recipes = Recipe.objects.filter(recipe_to_buy__user=request.user)
+    return render(request, "shopList.html", {'recipes': recipes, })

@@ -15,5 +15,7 @@ urlpatterns = [
     path('subscriptions/<int:author_id>/', views.subscriptions, name='remove_subscription'),
     path('favorites/', views.favorites, name='favorites'),
     path('favorites/<int:recipe_id>/', views.favorites, name='remove_favorite'),
+    path('purchases/', views.oh_my_purchpurchases, name='purchases'),
+    path('purchases/<int:recipe_id>/', views.oh_my_purchpurchases, name='remove_purchase'),
     path('', views.index, name='index'),
 ]

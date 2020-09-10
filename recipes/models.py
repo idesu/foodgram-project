@@ -63,7 +63,7 @@ class RecipeIngredient(models.Model):
     amount = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return f'{self.recipe.title} - {self.ingredient.title}'
+        return f'{self.recipe} - {self.ingredient}'
 
 
 class Follow(models.Model):
@@ -84,3 +84,12 @@ class BookmarkRecipe(AutoDateMixin, models.Model):
 
     def __str__(self):
         return f'{self.user} - {self.recipe.title}'
+
+
+class ShoppingList(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='shopper')
+    recipes = models.ManyToManyField(Recipe, related_name='recipe_to_buy')
+
+    def __str__(self):
+        return f'{self.user} - {self.recipes}'
