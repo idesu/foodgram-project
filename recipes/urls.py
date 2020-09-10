@@ -17,5 +17,6 @@ urlpatterns = [
     path('favorites/<int:recipe_id>/', views.favorites, name='remove_favorite'),
     path('purchases/', views.oh_my_purchpurchases, name='purchases'),
     path('purchases/<int:recipe_id>/', views.oh_my_purchpurchases, name='remove_purchase'),
+    path('generate_shop_list_pdf/', views.generate_pdf, name='generate_pdf'),
     path('', views.index, name='index'),
 ]

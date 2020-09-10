@@ -1,5 +1,7 @@
 import json
 
+from collections import defaultdict
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
@@ -277,3 +279,24 @@ def oh_my_purchpurchases(request, recipe_id=None):
 
     recipes = Recipe.objects.filter(recipe_to_buy__user=request.user)
     return render(request, "shopList.html", {'recipes': recipes, })
+
+
+@login_required
+def generate_pdf(request):
+    recipes = Recipe.objects.filter(recipe_to_buy__user=request.user)
+
+    ingredients = defaultdict(int)
+    for recipe in recipes:
+        for ingredient in recipe.recipeingredient_set.all():
+            ingredients[ingredient.ingredient] += ingredient.amount
+
+    output = ['Список покупок:\n']
+    for ingredient, total in ingredients.items():
+        output.append(f'{ingredient}: {total} {ingredient.measurement.title}')
+
+    filename = "ShoppingList.txt"
+    content = '\n'.join(output)
+    response = HttpResponse(content, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+    return response
+
