@@ -24,8 +24,7 @@ from .utils import (
 def index(request):
     recipes = (
         Recipe.objects.select_related('author')
-        .prefetch_related('author__following')
-        .prefetch_related('bookmarked')
+        .prefetch_related('tags')
         .order_by('-created_at')
     )
     tags = request.GET.get('tag', None)
@@ -35,23 +34,16 @@ def index(request):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(
-        request,
-        "index.html",
-        {
-            'page': page,
-            'paginator': paginator,
-            'tags': tags
-        }
+        request, "index.html", {'page': page, 'paginator': paginator, 'tags': tags}
     )
 
 
 def author(request, author_id):
     author = get_object_or_404(User, id=author_id)
     recipes = (
-        Recipe.objects.select_related('author')
-        .filter(author=author)
-        .prefetch_related('author__following')
-        .prefetch_related('bookmarked')
+        Recipe.objects.filter(author=author)
+        .select_related('author')
+        .prefetch_related('tags')
         .order_by('-created_at')
     )
     tags = request.GET.get('tag', None)
@@ -68,17 +60,16 @@ def author(request, author_id):
             'paginator': paginator,
             'tags': tags,
             'author': author,
-        }
+        },
     )
 
 
 @login_required
 def my_bookmarks(request):
     recipes = (
-        Recipe.objects.select_related('author')
-        .filter(bookmarked__user=request.user)
-        .prefetch_related('author__following')
-        .prefetch_related('bookmarked')
+        Recipe.objects.filter(bookmarked__user=request.user)
+        .select_related('author')
+        .prefetch_related('tags')
         .order_by('-created_at')
     )
     tags = request.GET.get('tag', None)
@@ -94,7 +85,7 @@ def my_bookmarks(request):
             'page': page,
             'paginator': paginator,
             'tags': tags,
-        }
+        },
     )
 
 
@@ -103,7 +94,7 @@ def my_subscriptions(request):
     authors = (
         User.objects.filter(following__user=request.user)
         .prefetch_related('recipes')
-        .annotate(recipes_count=Count('recipes')-3)
+        .annotate(recipes_count=Count('recipes') - 3)
     )
     paginator = Paginator(authors, 6)
     page_number = request.GET.get('page')
@@ -124,7 +115,7 @@ def recipe(request, recipe_id):
             'recipe': recipe_instance,
             'ingredients': ingredients,
             'tags': tags,
-        }
+        },
     )
 
 
@@ -251,9 +242,7 @@ def oh_my_purchpurchases(request, recipe_id=None):
     if request.method == 'POST':
         body = json.loads(request.body)
         recipe_id = body['id']
-        shopping_list, _ = ShoppingList.objects.get_or_create(
-            user=request.user
-        )
+        shopping_list, _ = ShoppingList.objects.get_or_create(user=request.user)
         try:
             recipe_to_buy = get_object_or_404(Recipe, id=recipe_id)
             shopping_list.recipes.add(recipe_to_buy)
@@ -264,9 +253,7 @@ def oh_my_purchpurchases(request, recipe_id=None):
         result_json = json.dumps(result)
         return HttpResponse(result_json, content_type='application/json')
     elif request.method == 'DELETE':
-        shopping_list, _ = ShoppingList.objects.get_or_create(
-            user=request.user
-        )
+        shopping_list, _ = ShoppingList.objects.get_or_create(user=request.user)
         try:
             recipe_to_remove = get_object_or_404(Recipe, id=recipe_id)
             shopping_list.recipes.remove(recipe_to_remove)
@@ -278,7 +265,13 @@ def oh_my_purchpurchases(request, recipe_id=None):
         return HttpResponse(result_json, content_type='application/json')
 
     recipes = Recipe.objects.filter(recipe_to_buy__user=request.user)
-    return render(request, "shopList.html", {'recipes': recipes, })
+    return render(
+        request,
+        "shopList.html",
+        {
+            'recipes': recipes,
+        },
+    )
 
 
 @login_required
@@ -299,4 +292,3 @@ def generate_pdf(request):
     response = HttpResponse(content, content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
     return response
-

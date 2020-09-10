@@ -1,6 +1,6 @@
 from django import template
 
-from recipes.models import BookmarkRecipe, Follow, Recipe, User, ShoppingList
+from recipes.models import BookmarkRecipe, Follow, Recipe
 
 register = template.Library()
 
@@ -12,7 +12,7 @@ def addclass(field, css):
 
 @register.filter
 def does_recipe_in_bookmarks(recipe, user):
-    return BookmarkRecipe.objects.filter(user=user, recipe=recipe).exists()
+    return recipe in Recipe.objects.filter(bookmarked__user=user)
 
 
 @register.filter

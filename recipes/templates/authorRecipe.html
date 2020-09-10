@@ -87,7 +87,7 @@
                 </div>
                 <div class="card__footer">
                 {% if user.is_authenticated %}
-                        {% if recipe|does_recipe_in_shopping_list:user %}
+                        {% if recipe|does_recipe_in_shopping_list:user_id %}
                             <button class="button button_style_light-blue-outline" name="purchpurchases"><span class="icon-check button__icon"></span> Рецепт добавлен</button>
                         {% else %}
                             <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
