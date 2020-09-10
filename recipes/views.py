@@ -29,7 +29,7 @@ def index(request):
     tags = request.GET.get('tag', None)
     if tags:
         recipes = recipes.filter(tags__slug__in=tags.split('_'))
-    paginator = Paginator(recipes, 9)
+    paginator = Paginator(recipes, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(
@@ -41,6 +41,34 @@ def index(request):
             'tags': tags
         }
     )
+
+
+def author(request, author_id):
+    author = get_object_or_404(User, id=author_id)
+    recipes = (
+        Recipe.objects.select_related('author')
+        .filter(author=author)
+        .prefetch_related('author__following')
+        .prefetch_related('bookmarked')
+        .order_by('-created_at')
+    )
+    tags = request.GET.get('tag', None)
+    if tags:
+        recipes = recipes.filter(tags__slug__in=tags.split('_'))
+    paginator = Paginator(recipes, 6)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    return render(
+        request,
+        "authorRecipe.html",
+        {
+            'page': page,
+            'paginator': paginator,
+            'tags': tags,
+            'author': author,
+        }
+    )
+
 
 @login_required()
 def my_subscriptions(request):

@@ -1,6 +1,6 @@
 from django import template
 
-from recipes.models import BookmarkRecipe, Follow, Recipe
+from recipes.models import BookmarkRecipe, Follow, Recipe, User
 
 register = template.Library()
 
@@ -16,9 +16,9 @@ def does_recipe_in_bookmarks(recipe, user):
 
 
 @register.filter
-def does_author_in_subscriptions(recipe, user):
-    return Follow.objects.filter(user=user, author=recipe.author).exists()
-
+def does_author_in_subscriptions(obj, user):
+    author = obj.author if isinstance(obj, Recipe) else obj
+    return Follow.objects.filter(user=user, author=author).exists()
 
 @register.filter
 def author_top_recipes(author):
