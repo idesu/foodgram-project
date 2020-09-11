@@ -41,9 +41,9 @@ def index(request):
 def author(request, author_id):
     author = get_object_or_404(User, id=author_id)
     recipes = (
-        Recipe.objects.filter(author=author)
-        .select_related('author')
+        Recipe.objects.select_related('author')
         .prefetch_related('tags')
+        .filter(author=author)
         .order_by('-created_at')
     )
     tags = request.GET.get('tag', None)

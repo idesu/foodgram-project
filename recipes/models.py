@@ -9,7 +9,9 @@ GRAM_ID = 1
 
 class Tag(models.Model):
     slug = models.SlugField('Название', max_length=35, unique=True)
-    text = models.CharField('Отображаемое название', max_length=35, blank=True, null=True)
+    text = models.CharField(
+        'Отображаемое название', max_length=35, blank=True, null=True
+    )
     color = models.CharField('Цвет', max_length=35, blank=True, null=True)
 
     def __str__(self):
@@ -29,7 +31,7 @@ class Ingredient(models.Model):
         Measurement,
         default=GRAM_ID,
         on_delete=models.SET_DEFAULT,
-        related_name='ingredients'
+        related_name='ingredients',
     )
 
     def __str__(self):
@@ -59,7 +61,9 @@ class RecipeIngredient(models.Model):
     """Количество ингредиентов в рецепте."""
 
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name='recipeingredients')
+    ingredient = models.ForeignKey(
+        Ingredient, on_delete=models.CASCADE, related_name='recipeingredients'
+    )
     amount = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
@@ -67,28 +71,25 @@ class RecipeIngredient(models.Model):
 
 
 class Follow(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='follower')
-    author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='following')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
 
     def __str__(self):
         return f'{self.user} - {self.author}'
 
 
 class BookmarkRecipe(AutoDateMixin, models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='user')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name='bookmarked')
+        Recipe, on_delete=models.CASCADE, related_name='bookmarked'
+    )
 
     def __str__(self):
         return f'{self.user} - {self.recipe.title}'
 
 
 class ShoppingList(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name='shopper')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='shopper')
     recipes = models.ManyToManyField(Recipe, related_name='recipe_to_buy')
 
     def __str__(self):

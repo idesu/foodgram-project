@@ -1,6 +1,6 @@
 from django import template
 
-from recipes.models import BookmarkRecipe, Follow, Recipe
+from recipes.models import Follow, Recipe
 
 register = template.Library()
 
@@ -49,6 +49,3 @@ def query_transform(context, **kwargs):
     for k, v in kwargs.items():
         query[k] = v
     return query.urlencode()
-
-
-
