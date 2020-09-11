@@ -1,5 +1,4 @@
 {% load user_filters %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,13 +75,17 @@
                         <input type="number" id="cantidad" class="form__input" min="0">
                         <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
                     </div>
+                    <div class="form__field-group-ingredientes-container">
                     {% for ingredient in valid_ingredients %}
-                        <div class="form__field-item-ingredient" id="ing{{ ingredient.id }}"><span> {{ ingredient.title }} {{ ingredient.amount }} {{ ingredient.units }}.</span> <span class="form__field-item-delete"></span>
+                        <div class="form__field-item-ingredient" id="ing_{{ ingredient.id }}">
+                            <span> {{ ingredient.title }} {{ ingredient.amount }}{{ ingredient.units }}.</span>
+                            <span class="form__field-item-delete"></span>
                             <input id="nameIngredient_{{ ingredient.id }}" name="nameIngredient_{{ ingredient.id }}" type="hidden" value="{{ ingredient.title }}">
                             <input id="valueIngredient_{{ ingredient.id }}" name="valueIngredient_{{ ingredient.id }}" type="hidden" value="{{ ingredient.amount }}">
                             <input id="unitsIngredient_{{ ingredient.id }}" name="unitsIngredient_{{ ingredient.id }}" type="hidden" value="{{ ingredient.units }}.">
                         </div>
                     {% endfor %}
+                    </div>
                     <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
                     {% for error in form.ingredients.errors %}
                         <span class="form__error">{{ error }}</span>

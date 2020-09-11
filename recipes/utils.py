@@ -24,7 +24,6 @@ def prepare_context_from_recipe_instance(recipe_instance, form) -> dict:
         'form': form,
         'valid_ingredients': ingredients_list,
         'tags': tags,
-        'ingredients_count': len(ingredients_list) + 1,
     }
 
 
@@ -60,7 +59,6 @@ def prepare_context_from_post(
         'form': form,
         'valid_ingredients': valid,
         'tags': tags,
-        'ingredients_count': len(valid) + 1,
     }
 
 
