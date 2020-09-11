@@ -13,10 +13,13 @@ from recipes.models import (
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ("pk", "title", "created_at", "author")
+    list_display = ("pk", "title", "created_at", "author", "in_favorites_count")
     search_fields = ("title", "author__username")
     list_filter = ("created_at",)
     empty_value_display = '-пусто-'
+
+    def in_favorites_count(self, obj):
+        return BookmarkRecipe.objects.filter(recipe=obj).count()
 
 
 class IngredientAdmin(admin.ModelAdmin):
