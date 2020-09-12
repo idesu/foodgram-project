@@ -1,5 +1,4 @@
 import json
-
 from collections import defaultdict
 
 from django.contrib.auth.decorators import login_required
@@ -121,27 +120,27 @@ def recipe(request, recipe_id):
 
 @login_required
 def new_recipe(request):
-    if request.method == 'POST':
-        recipe_instance = Recipe(author=request.user)
-        form = RecipeForm(
-            request.POST or None, files=request.FILES or None, instance=recipe_instance
-        )
-        valid_ingredients, invalid_ingredients = validate_ingredients_list_from_post(
-            request
-        )
+    if not request.method == 'POST':
+        form = RecipeForm()
+        return render(request, 'formRecipe.html', {'form': form})
+    recipe_instance = Recipe(author=request.user)
+    form = RecipeForm(
+        request.POST or None, files=request.FILES or None, instance=recipe_instance
+    )
+    valid_ingredients, invalid_ingredients = validate_ingredients_list_from_post(
+        request
+    )
 
-        if form.is_valid() and not invalid_ingredients:
-            with transaction.atomic():
-                form.save()
-                create_recipeingredients(recipe_instance, valid_ingredients)
-                update_tags(request, recipe_instance)
-            return redirect('index')
-        context = prepare_context_from_post(
-            request, form, valid_ingredients, invalid_ingredients
-        )
-        return render(request, 'formRecipe.html', context)
-    form = RecipeForm()
-    return render(request, 'formRecipe.html', {'form': form})
+    if form.is_valid() and not invalid_ingredients:
+        with transaction.atomic():
+            form.save()
+            create_recipeingredients(recipe_instance, valid_ingredients)
+            update_tags(request, recipe_instance)
+        return redirect('index')
+    context = prepare_context_from_post(
+        request, form, valid_ingredients, invalid_ingredients
+    )
+    return render(request, 'formRecipe.html', context)
 
 
 @login_required
@@ -180,7 +179,6 @@ def get_ingredients(request):
         for result in search_query
     ]
     result_json = json.dumps(results)
-    print(result_json)
     return HttpResponse(result_json, content_type='application/json')
 
 
@@ -199,8 +197,7 @@ def subscriptions(request, author_id=None):
         result = {'success': True} if created else {'success': False}
         result_json = json.dumps(result)
         return HttpResponse(result_json, content_type='application/json')
-
-    if request.method == 'DELETE':
+    else:
         author = get_object_or_404(User, id=author_id)
         subscription = Follow.objects.get(user=request.user, author=author).delete()
 
@@ -239,10 +236,10 @@ def favorites(request, recipe_id=None):
 @login_required
 @require_http_methods(['GET', 'POST', 'DELETE'])
 def oh_my_purchpurchases(request, recipe_id=None):
+    shopping_list, _ = ShoppingList.objects.get_or_create(user=request.user)
     if request.method == 'POST':
         body = json.loads(request.body)
         recipe_id = body['id']
-        shopping_list, _ = ShoppingList.objects.get_or_create(user=request.user)
         try:
             recipe_to_buy = get_object_or_404(Recipe, id=recipe_id)
             shopping_list.recipes.add(recipe_to_buy)
@@ -252,8 +249,8 @@ def oh_my_purchpurchases(request, recipe_id=None):
 
         result_json = json.dumps(result)
         return HttpResponse(result_json, content_type='application/json')
+
     elif request.method == 'DELETE':
-        shopping_list, _ = ShoppingList.objects.get_or_create(user=request.user)
         try:
             recipe_to_remove = get_object_or_404(Recipe, id=recipe_id)
             shopping_list.recipes.remove(recipe_to_remove)

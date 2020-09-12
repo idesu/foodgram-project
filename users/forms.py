@@ -6,7 +6,7 @@ User = get_user_model()
 
 
 class CreationForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
+    class Meta():
         model = User
         # TODO: Убрать фамилию из админки
         fields = ("first_name", "username", "email")
