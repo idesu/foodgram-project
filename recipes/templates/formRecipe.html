@@ -126,7 +126,7 @@
                     <button class="button button_style_blue">Создать рецепт</button>
                 {% else %}
                     <button class="button button_style_blue">Сохранить</button>
-                    <a style="margin-left: 2.5em" href="" class="form__ingredient-link">Удалить</a>
+                    <a style="margin-left: 2.5em" href="{% url 'delete_recipe' recipe_id %}" class="form__ingredient-link">Удалить</a>
                 {% endif %}
             </div>
         </form>
