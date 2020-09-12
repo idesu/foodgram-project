@@ -130,5 +130,5 @@ dmypy.json
 
 # IDE configs
 .idea/
-
+media/
 key.json
