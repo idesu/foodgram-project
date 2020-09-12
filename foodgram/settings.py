@@ -27,14 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'vq&8#^g8fjh37*gp+!vemlr&%es#ac30=e90*6wtbjcg)=skkr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "[::1]",
-    "testserver",
-]
+ALLOWED_HOSTS = ['*']
 
 INTERNAL_IPS = [
         "127.0.0.1",
