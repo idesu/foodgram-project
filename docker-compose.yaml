@@ -3,6 +3,7 @@ version: '3.8'
 volumes:
   postgres_data:
   static:
+  media:
 
 services:
   db:
@@ -15,7 +16,8 @@ services:
     image: atashi/foodgram:latest
     restart: always
     volumes:
-      - static:/code/static
+      - static:/code/static/
+      - media:/code/media/
     expose:
       - 8000
     depends_on:
@@ -25,7 +27,8 @@ services:
   nginx:
     image: atashi/nginx_foodgram:latest
     volumes:
-      - static:/code/static
+      - static:/code/static/
+      - media:/code/media/
     ports:
       - 80:80
     depends_on:
