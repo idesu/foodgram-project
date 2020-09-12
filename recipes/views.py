@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 
@@ -168,7 +168,17 @@ def edit_recipe(request, recipe_id):
         )
         return render(request, 'formRecipe.html', context)
     context = prepare_context_from_recipe_instance(recipe_instance, form)
+    context['recipe_id'] = recipe_id
     return render(request, 'formRecipe.html', context)
+
+
+@login_required
+def delete_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    if recipe.author != request.user:
+        return Http404
+    recipe.delete()
+    return redirect('index')
 
 
 @login_required
