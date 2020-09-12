@@ -42,6 +42,7 @@ def author(request, author_id):
     recipes = (
         Recipe.objects.select_related('author')
         .prefetch_related('tags')
+        .prefetch_related('recipe_to_buy')
         .filter(author=author)
         .order_by('-created_at')
     )
