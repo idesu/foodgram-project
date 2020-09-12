@@ -13,8 +13,6 @@ D
 foodgram/wsgi.py,6/9/6926c0d168bcbc0e662aaffb3ea7f32ba80736ec
 A
 recipes/mixins.py,9/e/9e7e26c5f47e0b4de14da92cd11f34c190ee7d28
-S
-#users/static/js/utils/debouncing.js,b/a/ba53c05f2b5aef51c0e4f68c4bb655a8263a3566
 W
 'users/templates/registration/login.html,c/d/cdd52bbd3b8779381ef811df005a74ac0e96baa4
 H
@@ -348,10 +346,6 @@ S
 :
 
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
-W
-'recipes/templates/formChangeRecipe.html,0/4/049b087f9896872134b9c3cd697d06bbfab9e635
-I
-templates/indexNotAuth.js,4/6/462f2e946606d39671e871e72f50275bf59e4976
 ?
 recipes/urls.py,c/7/c79c18aadcc6ec95af8fcc3bf25ad31b7f15957c
 A
@@ -360,20 +354,10 @@ A
 recipes/views.py,9/a/9a702dd803dbc788d437dc36680c68849bb7097a
 L
 recipes/static/formRecipe.js,c/e/ce10712d0d8ff16d44865c9fc070c385cadbef5e
-K
-templates/indexNotAuth.html,4/9/49af6e13d59e36c9950ffcb066db465015f01679
 Q
 !recipes/templates/formRecipe.html,c/9/c9975c991f24f32b776b33771cc24d7d5781d85f
 T
 $recipes/templatetags/user_filters.py,4/7/4738ebaf1ebe6ec38af8035e309d548bb345ba2a
-K
-users/static/pages/form.css,7/a/7a68ecce34e158de0731920eb8ab5d2174ca54cf
-g
-7users/static/blocks/button/_style/button_style_blue.css,2/a/2a58ca610074bd22126779171d5c664806131dfd
-U
-%users/static/blocks/button/button.css,0/c/0c9c27860aa6f6afe1fe49bdad3df8fc97e71fe8
-K
-templates/authorRecipe.html,3/2/329f6c2a94c36575421fddf5ff1a8414be7772b8
 9
 	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
 ]
@@ -394,9 +378,53 @@ K
 users/urls.py,7/e/7ebb6dc32a2768a7e73ce1c83409f9c85bd4ad6a
 L
 recipes/static/singlePage.js,2/4/2450d27a6a0519aaa2d9f53cc45721bc76030d97
-J
-users/static/js/api/Api.js,3/c/3c57a1d7b0d91d836250fdafe9c1cd9c8d62a49c
 D
 static/js/api/Api.js,c/a/ca640a6120cad4746aee843bf15b80e8840d86ce
 Q
 !recipes/templates/singlePage.html,1/d/1da043731cee4f65ae921e7d9f960b62d0c6937b
+]
+-recipes/migrations/0011_auto_20200908_2115.py,1/0/10f203fecf4a1a2c35500b832dc26ba3681a6d8b
+P
+ recipes/templates/paginator.html,2/f/2f9dfb381bb55887d6efeea4c445ca75d7f23bc4
+[
++recipes/static/blocks/main/center-block.css,b/6/b6e14f98195d0060f01b3ddb9cf747eceeb7477e
+N
+recipes/static/AuthorRecipe.js,4/7/47d3a737e676ec1a994d4801b8cfeff3de4b9ded
+J
+recipes/static/myFollow.js,f/8/f8dc7f3a396ab46d3cb2965b1bc5efe55f105d4a
+J
+recipes/static/favorite.js,d/b/db988d86e4b37a431a1f3788610f71277c438d0c
+K
+recipes/static/indexAuth.js,f/2/f22b6fffc39c1af4fcf4d39af8e39606500a0567
+\
+,recipes/static/js/components/AuthorRecipe.js,9/a/9a479f96474264bdaf8641a7da4ce45aab6836b6
+W
+'recipes/migrations/0012_shoppinglist.py,7/0/7013a2851d76fc3fba162f2890885e4a1155240c
+]
+-recipes/migrations/0013_auto_20200910_2147.py,5/d/5d0e81ce8b2c13cbfeb7699a9c9d5964ce833839
+J
+recipes/static/shopList.js,0/8/088707b721967a4a29cbcdb5c7a5abc9dbef2bda
+O
+recipes/templates/myFollow.html,3/b/3b2a33277f36203011559cef004a80ac3ab5e795
+e
+5users/templates/registration/password_reset_form.html,4/e/4e7b4508ab4b955307cb5221d4192ddc5dd1d34d
+O
+recipes/templates/shopList.html,5/0/505c1c47f9431bfa8d2c8d07d72066968700fb76
+O
+recipes/templates/favorite.html,f/3/f3222048dcb17f99345554ffc76b92c3b61bd2bb
+?
+users/models.py,f/1/f121007a966dcbe0e6d77b6ca09948108f3edfbb
+>
+users/admin.py,3/e/3ea505836db8ef76dd1c89a43cfc6ee4cd79a896
+J
+static/admin/css/login.css,a/d/ad765968e59bc02b262c1530b751226e2c27c252
+N
+static/admin/fonts/LICENSE.txt,2/0/20fed0bc8487993610e66f3400d3ba3013af2773
+@
+recipes/admin.py,6/d/6d41004ac1adc9ba016bc306273ee02bf63371af
+L
+recipes/templates/index.html,f/c/fc2ea39742c6f5e8812cd4126589b8d8c897c06f
+S
+#recipes/templates/authorRecipe.html,0/1/01f382d22a6fa86f3a29cfb4275443ce6278ee9f
+M
+recipes/context_processors.py,f/8/f867788d3770e73f7dccf54a345db6c993c2417a

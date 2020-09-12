@@ -16,7 +16,7 @@ def does_recipe_in_bookmarks(recipe, user):
 
 
 @register.filter
-def does_author_in_subscriptions(obj, user):
+def is_author_in_subscriptions(obj, user):
     author = obj.author if isinstance(obj, Recipe) else obj
     return Follow.objects.filter(user=user, author=author).exists()
 
@@ -39,7 +39,10 @@ def get_tags(request, tag):
         tags_list.append(tag)
         return '_'.join(tags_list)
     tags_list = tags.split('_')
-    tags_list.append(tag) if tag not in tags_list else tags_list.remove(tag)
+    if tag not in tags_list:
+        tags_list.append(tag)
+    else:
+        tags_list.remove(tag)
     return '_'.join(tags_list)
 
 

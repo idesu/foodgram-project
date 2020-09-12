@@ -88,7 +88,7 @@
                             <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
                         {% endif %}
                         <li class="single-card__item">
-                        {% if not recipe|does_author_in_subscriptions:user %}
+                        {% if not recipe|is_author_in_subscriptions:user %}
                             <button class="button button_style_light-blue button_size_auto" name="subscribe" data-out="true">Подписаться на автора</button></li>
                         {% else %}
                             <button class="button button_style_light-blue button_size_auto button_style_light-blue-outline" name="subscribe"><span class="icon-check button__icon"></span> Отписаться от автора</button>
