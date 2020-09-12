@@ -63,9 +63,9 @@
         {% if user.is_authenticated and user != author %}
         <div class="author-subscribe" data-author="{{ author.id }}">
             {% if not author|is_author_in_subscriptions:user %}
-                <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto" name="subscribe">Подписаться на автора</button></p>
+                <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto" name="subscribe" data-out="true">Подписаться на автора</button></p>
             {% else %}
-                <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto button_style_light-blue-outline" name="subscribe" data-out="true"><span class="icon-check button__icon"></span>Отписаться от автора</button></p>
+                <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto button_style_light-blue-outline" name="subscribe"><span class="icon-check button__icon"></span>Отписаться от автора</button></p>
             {% endif %}
         </div>
         {% endif %}
@@ -127,6 +127,6 @@
   <script src="{% static 'js/components/Header.js' %}"></script>
 
   <script src="{% static 'js/api/Api.js' %}"></script>
-  <script src="{% static 'authorRecipe.js' %}"></script>
+  <script src="{% static 'AuthorRecipe.js' %}"></script>
 </body>
 </html>
