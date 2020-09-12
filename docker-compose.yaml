@@ -12,7 +12,7 @@ services:
     env_file:
       - foodgram/.env
   web:
-    build: .
+    image: atashi/foodgram:latest
     restart: always
     volumes:
       - static:/code/static
@@ -23,7 +23,7 @@ services:
     env_file:
       - foodgram/.env
   nginx:
-    build: ./nginx
+    image: atashi/nginx_foodgram:latest
     volumes:
       - static:/code/static
     ports:
