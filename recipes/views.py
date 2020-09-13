@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 
 from .forms import RecipeForm
-from .models import Recipe, Ingredient, Follow, User, BookmarkRecipe, ShoppingList
+from .models import Recipe, Ingredient, Follow, User, BookmarkRecipe, ShoppingList, Tag
 from .utils import (
     validate_ingredients_list_from_post,
     create_recipeingredients,
@@ -28,14 +28,20 @@ def index(request):
     ).order_by(
         '-created_at'
     )
+    all_tags = Tag.objects.all()
     tags = request.GET.get('tag', None)
     if tags:
-        recipes = recipes.filter(tags__slug__in=tags.split('_'))
+        recipes = recipes.filter(
+            tags__slug__in=tags.split('_')
+        ).order_by(
+            '-created_at'
+        )
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(
-        request, "index.html", {'page': page, 'paginator': paginator, 'tags': tags}
+        request, "index.html",
+        {'page': page, 'paginator': paginator, 'tags': tags, 'all_tags': all_tags}
     )
 
 
@@ -52,9 +58,14 @@ def author(request, author_id):
     ).order_by(
         '-created_at'
     )
+    all_tags = Tag.objects.all()
     tags = request.GET.get('tag', None)
     if tags:
-        recipes = recipes.filter(tags__slug__in=tags.split('_'))
+        recipes = recipes.filter(
+            tags__slug__in=tags.split('_')
+        ).order_by(
+            '-created_at'
+        )
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
@@ -66,6 +77,7 @@ def author(request, author_id):
             'paginator': paginator,
             'tags': tags,
             'author': author,
+            'all_tags': all_tags,
         },
     )
 
@@ -81,6 +93,7 @@ def my_bookmarks(request):
     ).order_by(
         '-created_at'
     )
+    all_tags = Tag.objects.all()
     tags = request.GET.get('tag', None)
     if tags:
         recipes = recipes.filter(tags__slug__in=tags.split('_'))
@@ -94,6 +107,7 @@ def my_bookmarks(request):
             'page': page,
             'paginator': paginator,
             'tags': tags,
+            'all_tags': all_tags,
         },
     )
 
@@ -106,6 +120,8 @@ def my_subscriptions(request):
         'recipes'
     ).annotate(
         recipes_count=Count('recipes') - 3
+    ).order_by(
+        '-created_at'
     )
     paginator = Paginator(authors, 6)
     page_number = request.GET.get('page')
