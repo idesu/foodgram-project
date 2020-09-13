@@ -1,4 +1,4 @@
-from recipes.models import Recipe
+from recipes.models import Recipe, Tag
 
 
 def shopping_count(request):
@@ -9,3 +9,8 @@ def shopping_count(request):
     else:
         recipes_count = ''
     return {"shopping_list_count": recipes_count}
+
+
+def all_tags(request):
+    all_tags = Tag.objects.all()
+    return {'all_tags': all_tags}

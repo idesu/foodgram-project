@@ -12,7 +12,7 @@
                     <h1 class="single-card__title">{{ recipe.title }}</h1>
                     {% if user.is_authenticated and user != recipe.author %}
                         <div class="single-card__favorite">
-                        {% if recipe|does_recipe_in_bookmarks:user %}
+                        {% if recipe|is_recipe_in_bookmarks:user %}
                             <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_big icon-favorite_active"></span></button>
                         {% else %}
                             <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
@@ -39,7 +39,7 @@
                 </div>
                 <ul class="single-card__items">
                     {% if user.is_authenticated and user != recipe.author %}
-                        {% if recipe|does_recipe_in_shopping_list:user %}
+                        {% if recipe|is_recipe_in_shopping_list:user %}
                             <button class="button button_style_light-blue-outline" name="purchpurchases"><span class="icon-check button__icon"></span> Рецепт добавлен</button>
                         {% else %}
                             <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>

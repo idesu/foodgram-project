@@ -1,14 +1,9 @@
+{% load user_filters %}
 <div class="tags">
+    {% for tag in all_tags %}
     <div class="tags__item">
-        <input type="checkbox" name="breakfast" id="id_breakfast" class="tags__checkbox tags__checkbox_style_orange" {% if tags.breakfast  == 'on' %} checked {% endif %}>
-        <label for="id_breakfast" class="tags__label">Завтрак</label>
+        <input type="checkbox" name="{{ tag.slug }}" id="id_{{ tag.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}" {% if tag|is_tag_in_args:tags %} checked {% endif %}>
+        <label for="id_{{ tag.slug }}" class="tags__label">{{ tag.text }}</label>
     </div>
-    <div class="tags__item">
-        <input type="checkbox" name="lunch" id="id_lunch" class="tags__checkbox tags__checkbox_style_green" {% if tags.lunch  == 'on' %} checked {% endif %}>
-        <label for="id_lunch" class="tags__label">Обед</label>
-    </div>
-    <div class="tags__item">
-        <input type="checkbox" name="dinner" id="id_dinner" class="tags__checkbox tags__checkbox_style_purple" {% if tags.dinner  == 'on' %} checked {% endif %}>
-        <label for="id_dinner" class="tags__label">Ужин</label>
-    </div>
+    {% endfor %}
 </div>
