@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 
@@ -21,10 +21,12 @@ from .utils import (
 
 
 def index(request):
-    recipes = (
-        Recipe.objects.select_related('author')
-        .prefetch_related('tags')
-        .order_by('-created_at')
+    recipes = Recipe.objects.select_related(
+        'author'
+    ).prefetch_related(
+        'tags'
+    ).order_by(
+        '-created_at'
     )
     tags = request.GET.get('tag', None)
     if tags:
@@ -39,12 +41,16 @@ def index(request):
 
 def author(request, author_id):
     author = get_object_or_404(User, id=author_id)
-    recipes = (
-        Recipe.objects.select_related('author')
-        .prefetch_related('tags')
-        .prefetch_related('recipe_to_buy')
-        .filter(author=author)
-        .order_by('-created_at')
+    recipes = Recipe.objects.select_related(
+        'author'
+    ).prefetch_related(
+        'tags'
+    ).prefetch_related(
+        'recipe_to_buy'
+    ).filter(
+        author=author
+    ).order_by(
+        '-created_at'
     )
     tags = request.GET.get('tag', None)
     if tags:
@@ -66,11 +72,14 @@ def author(request, author_id):
 
 @login_required
 def my_bookmarks(request):
-    recipes = (
-        Recipe.objects.filter(bookmarked__user=request.user)
-        .select_related('author')
-        .prefetch_related('tags')
-        .order_by('-created_at')
+    recipes = Recipe.objects.filter(
+        bookmarked__user=request.user
+    ).select_related(
+        'author'
+    ).prefetch_related(
+        'tags'
+    ).order_by(
+        '-created_at'
     )
     tags = request.GET.get('tag', None)
     if tags:
@@ -91,10 +100,12 @@ def my_bookmarks(request):
 
 @login_required
 def my_subscriptions(request):
-    authors = (
-        User.objects.filter(following__user=request.user)
-        .prefetch_related('recipes')
-        .annotate(recipes_count=Count('recipes') - 3)
+    authors = User.objects.filter(
+        following__user=request.user
+    ).prefetch_related(
+        'recipes'
+    ).annotate(
+        recipes_count=Count('recipes') - 3
     )
     paginator = Paginator(authors, 6)
     page_number = request.GET.get('page')
@@ -189,8 +200,7 @@ def get_ingredients(request):
         {"title": result.title, "dimension": result.measurement.title}
         for result in search_query
     ]
-    result_json = json.dumps(results)
-    return HttpResponse(result_json, content_type='application/json')
+    return JsonResponse(results, safe=False)
 
 
 @login_required
@@ -206,15 +216,13 @@ def subscriptions(request, author_id=None):
         )
 
         result = {'success': True} if created else {'success': False}
-        result_json = json.dumps(result)
-        return HttpResponse(result_json, content_type='application/json')
+        return JsonResponse(result)
     else:
         author = get_object_or_404(User, id=author_id)
         subscription = Follow.objects.get(user=request.user, author=author).delete()
 
         result = {'success': True} if subscription else {'success': False}
-        result_json = json.dumps(result)
-        return HttpResponse(result_json, content_type='application/json')
+        return JsonResponse(result)
 
 
 @login_required
@@ -230,18 +238,16 @@ def favorites(request, recipe_id=None):
         )
 
         result = {'success': True} if created else {'success': False}
-        result_json = json.dumps(result)
-        return HttpResponse(result_json, content_type='application/json')
+        return JsonResponse(result)
 
-    if request.method == 'DELETE':
+    else:
         bookmark_recipe = get_object_or_404(Recipe, id=recipe_id)
         bookmark = BookmarkRecipe.objects.get(
             user=request.user, recipe=bookmark_recipe
         ).delete()
 
         result = {'success': True} if bookmark else {'success': False}
-        result_json = json.dumps(result)
-        return HttpResponse(result_json, content_type='application/json')
+        return JsonResponse(result)
 
 
 @login_required
@@ -258,8 +264,7 @@ def oh_my_purchpurchases(request, recipe_id=None):
         except Exception:
             result = {'success': False}
 
-        result_json = json.dumps(result)
-        return HttpResponse(result_json, content_type='application/json')
+        return JsonResponse(result)
 
     elif request.method == 'DELETE':
         try:
@@ -269,8 +274,7 @@ def oh_my_purchpurchases(request, recipe_id=None):
         except Exception:
             result = {'success': False}
 
-        result_json = json.dumps(result)
-        return HttpResponse(result_json, content_type='application/json')
+        return JsonResponse(result)
 
     recipes = Recipe.objects.filter(recipe_to_buy__user=request.user)
     return render(
@@ -283,7 +287,7 @@ def oh_my_purchpurchases(request, recipe_id=None):
 
 
 @login_required
-def generate_pdf(request):
+def generate_shopping_list(request):
     recipes = Recipe.objects.filter(recipe_to_buy__user=request.user)
 
     ingredients = defaultdict(int)

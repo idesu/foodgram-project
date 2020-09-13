@@ -27,6 +27,6 @@ urlpatterns = [
     ),
 
 
-    path('api/generate_shop_list_pdf/', views.generate_pdf, name='generate_pdf'),
+    path('api/generate_shop_list/', views.generate_shopping_list, name='generate_shopping_list'),
     path('', views.index, name='index'),
 ]

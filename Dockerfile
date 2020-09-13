@@ -2,7 +2,7 @@ FROM python:3.8.5
 
 WORKDIR /code
 
-COPY . /code
+COPY . .
 
 RUN apt update -y && apt install netcat -y
 
