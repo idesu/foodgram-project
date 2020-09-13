@@ -32,6 +32,7 @@ def index(request):
     if tags:
         recipes = recipes.filter(
             tags__slug__in=tags.split('_')
+        ).distinct(
         ).order_by(
             '-created_at'
         )
@@ -61,6 +62,7 @@ def author(request, author_id):
     if tags:
         recipes = recipes.filter(
             tags__slug__in=tags.split('_')
+        ).distinct(
         ).order_by(
             '-created_at'
         )
@@ -92,7 +94,9 @@ def my_bookmarks(request):
     )
     tags = request.GET.get('tag', None)
     if tags:
-        recipes = recipes.filter(tags__slug__in=tags.split('_'))
+        recipes = recipes.filter(
+            tags__slug__in=tags.split('_')
+        ).distinct()
     paginator = Paginator(recipes, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)

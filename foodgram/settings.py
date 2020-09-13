@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'sorl.thumbnail',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
 ]
 
 MIDDLEWARE = [
@@ -154,3 +156,5 @@ LOGGING = {
     "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler"}},
     "loggers": {"django.db.backends": {"handlers": ["console"], "level": "DEBUG"}},
 }
+
+SITE_ID = 1

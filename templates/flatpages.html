@@ -1,0 +1,17 @@
+{% extends "base.html" %} 
+{% block title %} {{ flatpage.title }} {% endblock %}
+{% load static %}
+{% block css %}<link rel="stylesheet" href="{% static 'pages/form.css' %}">{% endblock css %}
+
+{% block content %}
+
+<div class="container">
+    <div class="main__header">
+        <h1 class="main__title">{{ flatpage.title }}</h1>
+    </div>
+    <div class="form-container" style="justify-content: left">
+        <p class="form__info-text">{{ flatpage.content }}</p>
+    </div>
+</div>
+
+{% endblock %}
