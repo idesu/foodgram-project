@@ -12,7 +12,7 @@ def addclass(field, css):
 
 @register.filter
 def is_recipe_in_bookmarks(recipe, user):
-    return recipe in Recipe.objects.filter(bookmarked__user=user)
+    return Recipe.objects.filter(bookmarked__user=user, pk=recipe.pk).exists()
 
 
 @register.filter

@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 
@@ -29,4 +29,8 @@ urlpatterns = [
 
     path('api/generate_shop_list/', views.generate_shopping_list, name='generate_shopping_list'),
     path('', views.index, name='index'),
+
+    path('about/', include('django.contrib.flatpages.urls')),
+
+
 ]
