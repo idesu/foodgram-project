@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 
 from .forms import RecipeForm
-from .models import Recipe, Ingredient, Follow, User, BookmarkRecipe, ShoppingList, Tag
+from .models import Recipe, Ingredient, Follow, User, BookmarkRecipe, ShoppingList
 from .utils import (
     validate_ingredients_list_from_post,
     create_recipeingredients,
@@ -40,7 +40,7 @@ def index(request):
     page = paginator.get_page(page_number)
     return render(
         request, "index.html",
-        {'page': page, 'paginator': paginator, 'tags': tags,}
+        {'page': page, 'paginator': paginator, 'tags': tags}
     )
 
 
