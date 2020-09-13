@@ -120,8 +120,6 @@ def my_subscriptions(request):
         'recipes'
     ).annotate(
         recipes_count=Count('recipes') - 3
-    ).order_by(
-        '-created_at'
     )
     paginator = Paginator(authors, 6)
     page_number = request.GET.get('page')

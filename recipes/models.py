@@ -70,7 +70,7 @@ class RecipeIngredient(models.Model):
         return f'{self.recipe} - {self.ingredient}'
 
 
-class Follow(models.Model):
+class Follow(AutoDateMixin, models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
 
