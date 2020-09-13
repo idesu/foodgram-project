@@ -11,7 +11,7 @@ def addclass(field, css):
 
 
 @register.filter
-def does_recipe_in_bookmarks(recipe, user):
+def is_recipe_in_bookmarks(recipe, user):
     return recipe in Recipe.objects.filter(bookmarked__user=user)
 
 
@@ -27,8 +27,15 @@ def author_top_recipes(author):
 
 
 @register.filter
-def does_recipe_in_shopping_list(recipe, user):
+def is_recipe_in_shopping_list(recipe, user):
     return Recipe.objects.filter(recipe_to_buy__user=user, id=recipe.id).exists()
+
+
+@register.filter
+def is_tag_in_args(tag, request_tags):
+    if tag.slug in request_tags and request_tags[tag.slug] == 'on':
+        return True
+    return False
 
 
 @register.filter

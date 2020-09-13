@@ -55,7 +55,6 @@ def prepare_context_from_post(
             field='ingredients',
             error=ValidationError(f'Ингредиентов {invalid_ingredients} не существует.'),
         )
-
     return {
         'form': form,
         'valid_ingredients': valid,
